@@ -399,6 +399,7 @@ def start_exp():
     # Check first to see if this hitId or assignmentId exists.  If so, check to
     # see if inExp is set
     allow_repeats = CONFIG.getboolean('HIT Configuration', 'allow_repeats')
+    allow_continue = CONFIG.getboolean('HIT Configuration', 'allow_continue')
     if allow_repeats:
         matches = Participant.query.\
             filter(Participant.workerid == worker_id).\
