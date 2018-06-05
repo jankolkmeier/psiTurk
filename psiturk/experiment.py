@@ -295,7 +295,8 @@ def advertisement():
         status = None
 
     allow_repeats = CONFIG.getboolean('HIT Configuration', 'allow_repeats')
-    if (status == STARTED or status == QUITEARLY) and not debug_mode:
+    allow_continue = CONFIG.getboolean('HIT Configuration', 'allow_continue')
+    if (status == STARTED or status == QUITEARLY) and not (debug_mode or allow_continue):
         # Once participants have finished the instructions, we do not allow
         # them to start the task again.
         raise ExperimentError('already_started_exp_mturk')
@@ -397,6 +398,7 @@ def start_exp():
     # Check first to see if this hitId or assignmentId exists.  If so, check to
     # see if inExp is set
     allow_repeats = CONFIG.getboolean('HIT Configuration', 'allow_repeats')
+    allow_continue = CONFIG.getboolean('HIT Configuration', 'allow_continue')
     if allow_repeats:
         matches = Participant.query.\
             filter(Participant.workerid == worker_id).\
@@ -457,7 +459,7 @@ def start_exp():
         if nrecords <= 1 and not other_assignment:
             part = matches[0]
             # In experiment (or later) can't restart at this point
-            if part.status >= STARTED and not debug_mode:
+            if part.status >= STARTED and not (debug_mode or allow_continue):
                 raise ExperimentError('already_started_exp')
         else:
             if nrecords > 1:
